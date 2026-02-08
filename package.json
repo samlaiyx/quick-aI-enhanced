@@ -1,0 +1,149 @@
+{
+  "name": "quick-ai",
+  "displayName": "Quick AI",
+  "description": "Quick access to Warp terminal, Claude CLI, and Opencode CLI",
+  "version": "0.0.1",
+  "publisher": "jackywjs",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.105.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "warpStatusBar",
+        "title": "Open in Warp",
+        "category": "Quick AI"
+      },
+      {
+        "command": "quickClaudeCommand",
+        "title": "Quick Claude",
+        "category": "Quick AI"
+      },
+      {
+        "command": "quickOpencodeCommand",
+        "title": "Quick Opencode",
+        "category": "Quick AI"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "quickClaudeCommand",
+        "key": "cmd+shift+c",
+        "mac": "cmd+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "quickOpencodeCommand",
+        "key": "cmd+shift+o",
+        "mac": "cmd+shift+o",
+        "when": "editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "Quick AI",
+      "properties": {
+        "quickAI.showWarpIcon": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示 Warp 图标"
+        },
+        "quickAI.showClaudeIcon": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示 Claude 图标"
+        },
+        "quickAI.showOpencodeIcon": {
+          "type": "boolean",
+          "default": true,
+          "description": "在状态栏显示 Opencode 图标"
+        },
+        "quickAI.iconStyle": {
+          "type": "string",
+          "enum": ["icon", "icon+text"],
+          "enumDescriptions": [
+            "仅显示图标",
+            "显示图标和文字"
+          ],
+          "default": "icon+text",
+          "description": "状态栏图标显示样式"
+        },
+        "quickAI.terminalLocation": {
+          "type": "string",
+          "enum": ["panel", "editor"],
+          "enumDescriptions": [
+            "在终端面板中打开（底部）",
+            "在编辑器标签页中打开"
+          ],
+          "default": "panel",
+          "description": "命令执行时终端的打开位置"
+        },
+        "quickAI.customCommands": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "object",
+            "required": ["name", "command"],
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "显示名称",
+                "minLength": 1
+              },
+              "command": {
+                "type": "string",
+                "description": "要执行的命令",
+                "minLength": 1
+              },
+              "icon": {
+                "type": "string",
+                "description": "状态栏图标 (VS Code Codicon，如 $(robot))",
+                "default": "$(circle-large-outline)"
+              },
+              "keybinding": {
+                "type": "string",
+                "description": "可选的快捷键绑定"
+              }
+            }
+          },
+          "description": "自定义命令列表"
+        }
+      }
+    }
+  },
+  "vsce": {
+    "dependencies": false
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.105.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@typescript-eslint/eslint-plugin": "^7.0.2",
+    "@typescript-eslint/parser": "^7.0.2",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.90.3",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.6",
+    "@vscode/test-electron": "^2.3.9"
+  }
+}
