@@ -2,6 +2,8 @@
 
 Quick access to Warp terminal, Claude CLI, and Opencode CLI for VS Code.
 
+English | [简体中文](./README.zh-CN.md)
+
 ## Features
 
 - **Status Bar Icons**: Quick access to Warp, Claude, and Opencode from the status bar

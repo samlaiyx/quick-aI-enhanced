@@ -5,6 +5,14 @@
   "version": "0.0.1",
   "publisher": "jackywjs",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wangjs-jacky/quick-ai.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wangjs-jacky/quick-ai/issues"
+  },
+  "homepage": "https://github.com/wangjs-jacky/quick-ai#readme",
   "engines": {
     "vscode": "^1.105.0"
   },
@@ -82,7 +90,7 @@
             "在终端面板中打开（底部）",
             "在编辑器标签页中打开"
           ],
-          "default": "panel",
+          "default": "editor",
           "description": "命令执行时终端的打开位置"
         },
         "quickAI.customCommands": {
