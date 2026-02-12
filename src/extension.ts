@@ -148,14 +148,57 @@ function disposeStatusBarItems(): void {
 }
 
 /**
+ * 获取工作区文件夹
+ * - 无工作区时显示警告并返回 undefined
+ * - 单文件夹时直接返回该文件夹
+ * - 多文件夹时显示 Quick Pick 选择界面
+ */
+async function getWorkspaceFolder(): Promise<vscode.WorkspaceFolder | undefined> {
+	const workspaceFolders = vscode.workspace.workspaceFolders;
+
+	// 无工作区场景
+	if (!workspaceFolders || workspaceFolders.length === 0) {
+		vscode.window.showWarningMessage('请先打开一个工作区文件夹');
+		return undefined;
+	}
+
+	// 单文件夹场景 - 直接使用
+	if (workspaceFolders.length === 1) {
+		return workspaceFolders[0];
+	}
+
+	// 多文件夹场景 - 显示 Quick Pick 选择界面
+	interface WorkspaceFolderItem extends vscode.QuickPickItem {
+		folder: vscode.WorkspaceFolder;
+	}
+
+	const items: WorkspaceFolderItem[] = workspaceFolders.map(folder => ({
+		label: folder.name,
+		description: folder.uri.fsPath,
+		folder: folder
+	}));
+
+	const selected = await vscode.window.showQuickPick(items, {
+		placeHolder: '选择一个工作区文件夹'
+	});
+
+	return selected?.folder;
+}
+
+/**
  * 打开 Warp 终端
  */
-function openWarpTerminal(): void {
-	// 获取当前工作区根目录
-	const workspaceRoot = vscode.workspace.rootPath || '.';
+async function openWarpTerminal(): Promise<void> {
+	// 获取工作区文件夹
+	const folder = await getWorkspaceFolder();
+	if (!folder) {
+		return; // 用户取消或无工作区
+	}
+
+	const workspacePath = folder.uri.fsPath;
 
 	// 使用 child_process 执行 open 命令
-	exec(`open -a "Warp" "${workspaceRoot}"`, (error, stdout, stderr) => {
+	exec(`open -a "Warp" "${workspacePath}"`, (error, stdout, stderr) => {
 		if (error) {
 			console.error(`打开 Warp 失败: ${error.message}`);
 			vscode.window.showErrorMessage(`无法打开 Warp: ${error.message}`);
@@ -168,14 +211,19 @@ function openWarpTerminal(): void {
 /**
  * 创建终端并返回
  */
-function createTerminal(name: string): vscode.Terminal {
+async function createTerminal(name: string): Promise<vscode.Terminal | undefined> {
 	const config = getConfig();
-	const workspaceRoot = vscode.workspace.rootPath;
+
+	// 获取工作区文件夹
+	const folder = await getWorkspaceFolder();
+	if (!folder) {
+		return undefined; // 用户取消或无工作区
+	}
 
 	// 根据配置选择终端位置
 	const terminalOptions: vscode.TerminalOptions = {
 		name,
-		cwd: workspaceRoot || undefined
+		cwd: folder.uri.fsPath
 	};
 
 	if (config.terminalLocation === 'editor') {
@@ -191,9 +239,12 @@ function createTerminal(name: string): vscode.Terminal {
 /**
  * 执行 Quick Claude 命令
  */
-function executeQuickClaude(): void {
+async function executeQuickClaude(): Promise<void> {
 	// 创建新的终端
-	const terminal = createTerminal('Quick Claude');
+	const terminal = await createTerminal('Quick Claude');
+	if (!terminal) {
+		return; // 用户取消或无工作区
+	}
 
 	// 发送 Claude CLI 命令（包含换行符自动执行）
 	terminal.sendText('claude --dangerously-skip-permissions\n');
@@ -205,9 +256,12 @@ function executeQuickClaude(): void {
 /**
  * 执行 Quick Opencode 命令
  */
-function executeQuickOpencode(): void {
+async function executeQuickOpencode(): Promise<void> {
 	// 创建新的终端
-	const terminal = createTerminal('Quick Opencode');
+	const terminal = await createTerminal('Quick Opencode');
+	if (!terminal) {
+		return; // 用户取消或无工作区
+	}
 
 	// 发送 Opencode 命令（包含换行符自动执行）
 	terminal.sendText('opencode\n');

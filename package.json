@@ -2,7 +2,7 @@
   "name": "quick-ai",
   "displayName": "Quick AI",
   "description": "Quick access to Warp terminal, Claude CLI, and Opencode CLI",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "publisher": "jackywjs",
   "license": "MIT",
   "repository": {
@@ -129,6 +129,9 @@
   "vsce": {
     "dependencies": false
   },
+  "ovsx": {
+    "dependencies": false
+  },
   "scripts": {
     "vscode:prepublish": "pnpm run package",
     "compile": "webpack",
@@ -138,7 +141,13 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "pnpm run compile-tests && pnpm run compile && pnpm run lint",
     "lint": "eslint src --ext ts",
-    "test": "vscode-test"
+    "test": "vscode-test",
+    "build": "pnpm run package",
+    "package:vsix": "vsce package",
+    "publish:vsce": "vsce publish",
+    "publish:ovsx": "ovsx publish --no-dependencies",
+    "publish:all": "pnpm run publish:vsce && pnpm run publish:ovsx",
+    "deploy": "pnpm run build && pnpm run publish:all"
   },
   "devDependencies": {
     "@types/vscode": "^1.105.0",
@@ -152,6 +161,8 @@
     "webpack": "^5.90.3",
     "webpack-cli": "^5.1.4",
     "@vscode/test-cli": "^0.0.6",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "@vscode/vsce": "^3.2.1",
+    "ovsx": "^0.10.9"
   }
 }
