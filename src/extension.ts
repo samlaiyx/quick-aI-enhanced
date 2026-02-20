@@ -2,10 +2,20 @@
 import * as vscode from 'vscode';
 import { exec } from 'child_process';
 
+// 自定义命令接口
+interface CustomCommand {
+	name: string;
+	command: string;
+	icon?: string;
+	keybinding?: string;
+}
+
 // 状态栏项引用
 let warpStatusBarItem: vscode.StatusBarItem | undefined;
 let claudeStatusBarItem: vscode.StatusBarItem | undefined;
 let opencodeStatusBarItem: vscode.StatusBarItem | undefined;
+let customStatusBarItems: vscode.StatusBarItem[] = [];
+let customCommandDisposables: vscode.Disposable[] = [];
 
 // 配置变更监听器
 let configChangeListener: vscode.Disposable | undefined;
@@ -63,7 +73,10 @@ function getConfig() {
 		showClaudeIcon: config.get<boolean>('showClaudeIcon', true),
 		showOpencodeIcon: config.get<boolean>('showOpencodeIcon', true),
 		iconStyle: config.get<string>('iconStyle', 'icon+text'),
-		terminalLocation: config.get<string>('terminalLocation', 'panel') as 'panel' | 'editor'
+		terminalLocation: config.get<string>('terminalLocation', 'panel') as 'panel' | 'editor',
+		claudeCommand: config.get<string>('claudeCommand', 'claude --dangerously-skip-permissions'),
+		opencodeCommand: config.get<string>('opencodeCommand', 'opencode'),
+		customCommands: config.get<CustomCommand[]>('customCommands', [])
 	};
 }
 
@@ -127,6 +140,80 @@ function createStatusBarItems(context: vscode.ExtensionContext): void {
 	}
 
 	console.log('状态栏图标已创建，配置:', config);
+
+	// 4. 创建自定义命令状态栏图标
+	createCustomStatusBarItems(context, config.customCommands);
+}
+
+/**
+ * 创建自定义命令状态栏图标
+ */
+function createCustomStatusBarItems(context: vscode.ExtensionContext, customCommands: CustomCommand[]): void {
+	// 清理旧的自定义命令
+	disposeCustomStatusBarItems();
+
+	// 为每个自定义命令创建状态栏图标
+	customCommands.forEach((cmd, index) => {
+		// 验证必填字段
+		if (!cmd.name || !cmd.command) {
+			console.warn('跳过无效的自定义命令配置:', cmd);
+			return;
+		}
+
+		// 生成命令 ID（使用名称作为标识符，移除特殊字符）
+		const commandId = `quickAI.custom.${cmd.name.replace(/[^a-zA-Z0-9]/g, '_')}`;
+
+		// 注册命令
+		const disposable = vscode.commands.registerCommand(commandId, async () => {
+			const folder = await getWorkspaceFolder();
+			if (!folder) {
+				return;
+			}
+
+			const terminal = vscode.window.createTerminal({
+				name: cmd.name,
+				cwd: folder.uri.fsPath,
+				location: getConfig().terminalLocation === 'editor'
+					? { viewColumn: vscode.ViewColumn.Two }
+					: undefined
+			});
+
+			terminal.sendText(cmd.command + '\n');
+			terminal.show();
+		});
+
+		context.subscriptions.push(disposable);
+		customCommandDisposables.push(disposable);
+
+		// 创建状态栏图标
+		const icon = cmd.icon || 'circle-large-outline';
+		const priority = 90 - index; // 自定义命令排在后面
+		const statusBarItem = vscode.window.createStatusBarItem(
+			`quickAI.custom.${cmd.name}`,
+			vscode.StatusBarAlignment.Right,
+			priority
+		);
+		statusBarItem.text = getStatusBarText(icon.replace(/^\$\(/, '').replace(/\)$/, ''), cmd.name);
+		statusBarItem.tooltip = cmd.command;
+		statusBarItem.command = commandId;
+		statusBarItem.show();
+
+		context.subscriptions.push(statusBarItem);
+		customStatusBarItems.push(statusBarItem);
+	});
+
+	console.log(`创建了 ${customStatusBarItems.length} 个自定义命令状态栏图标`);
+}
+
+/**
+ * 清理自定义命令状态栏项
+ */
+function disposeCustomStatusBarItems(): void {
+	customStatusBarItems.forEach(item => item.dispose());
+	customStatusBarItems = [];
+
+	customCommandDisposables.forEach(d => d.dispose());
+	customCommandDisposables = [];
 }
 
 /**
@@ -145,6 +232,8 @@ function disposeStatusBarItems(): void {
 		opencodeStatusBarItem.dispose();
 		opencodeStatusBarItem = undefined;
 	}
+	// 清理自定义命令状态栏项
+	disposeCustomStatusBarItems();
 }
 
 /**
@@ -240,6 +329,8 @@ async function createTerminal(name: string): Promise<vscode.Terminal | undefined
  * 执行 Quick Claude 命令
  */
 async function executeQuickClaude(): Promise<void> {
+	const config = getConfig();
+
 	// 创建新的终端
 	const terminal = await createTerminal('Quick Claude');
 	if (!terminal) {
@@ -247,7 +338,7 @@ async function executeQuickClaude(): Promise<void> {
 	}
 
 	// 发送 Claude CLI 命令（包含换行符自动执行）
-	terminal.sendText('claude --dangerously-skip-permissions\n');
+	terminal.sendText(config.claudeCommand + '\n');
 
 	// 显示并聚焦终端
 	terminal.show();
@@ -257,6 +348,8 @@ async function executeQuickClaude(): Promise<void> {
  * 执行 Quick Opencode 命令
  */
 async function executeQuickOpencode(): Promise<void> {
+	const config = getConfig();
+
 	// 创建新的终端
 	const terminal = await createTerminal('Quick Opencode');
 	if (!terminal) {
@@ -264,7 +357,7 @@ async function executeQuickOpencode(): Promise<void> {
 	}
 
 	// 发送 Opencode 命令（包含换行符自动执行）
-	terminal.sendText('opencode\n');
+	terminal.sendText(config.opencodeCommand + '\n');
 
 	// 显示并聚焦终端
 	terminal.show();

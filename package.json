@@ -2,7 +2,7 @@
   "name": "quick-ai",
   "displayName": "Quick AI",
   "description": "Quick access to Warp terminal, Claude CLI, and Opencode CLI",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "jackywjs",
   "license": "MIT",
   "repository": {
@@ -75,7 +75,10 @@
         },
         "quickAI.iconStyle": {
           "type": "string",
-          "enum": ["icon", "icon+text"],
+          "enum": [
+            "icon",
+            "icon+text"
+          ],
           "enumDescriptions": [
             "仅显示图标",
             "显示图标和文字"
@@ -85,7 +88,10 @@
         },
         "quickAI.terminalLocation": {
           "type": "string",
-          "enum": ["panel", "editor"],
+          "enum": [
+            "panel",
+            "editor"
+          ],
           "enumDescriptions": [
             "在终端面板中打开（底部）",
             "在编辑器标签页中打开"
@@ -93,12 +99,25 @@
           "default": "editor",
           "description": "命令执行时终端的打开位置"
         },
+        "quickAI.claudeCommand": {
+          "type": "string",
+          "default": "claude --dangerously-skip-permissions",
+          "description": "Claude CLI 命令（不含换行符）"
+        },
+        "quickAI.opencodeCommand": {
+          "type": "string",
+          "default": "opencode",
+          "description": "Opencode CLI 命令（不含换行符）"
+        },
         "quickAI.customCommands": {
           "type": "array",
           "default": [],
           "items": {
             "type": "object",
-            "required": ["name", "command"],
+            "required": [
+              "name",
+              "command"
+            ],
             "properties": {
               "name": {
                 "type": "string",

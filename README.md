@@ -101,9 +101,32 @@ Choose where terminals open when executing commands:
 }
 ```
 
+### CLI Commands
+
+Customize the commands executed by the Claude and Opencode status bar icons:
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `quickAI.claudeCommand` | string | `claude --dangerously-skip-permissions` | Command to execute when clicking Claude icon |
+| `quickAI.opencodeCommand` | string | `opencode` | Command to execute when clicking Opencode icon |
+
+**Example**: Use Claude with a specific model
+```json
+{
+  "quickAI.claudeCommand": "claude --model opus"
+}
+```
+
+**Example**: Use a different AI CLI tool
+```json
+{
+  "quickAI.claudeCommand": "aider --model claude-3-opus"
+}
+```
+
 ### Custom Commands
 
-You can add custom commands by configuring `quickAI.customCommands`:
+Add your own commands to the status bar by configuring `quickAI.customCommands`:
 
 #### Example Configuration
 
@@ -111,14 +134,24 @@ You can add custom commands by configuring `quickAI.customCommands`:
 {
   "quickAI.customCommands": [
     {
-      "name": "My Command",
-      "command": "my-command --args",
-      "icon": "$(star)"
+      "name": "Aider",
+      "command": "aider --model claude",
+      "icon": "$(sparkle)"
+    },
+    {
+      "name": "Gemini",
+      "command": "gemini-cli",
+      "icon": "$(debug-start)"
     },
     {
       "name": "Run Tests",
       "command": "npm test",
       "icon": "$(beaker)"
+    },
+    {
+      "name": "Git Status",
+      "command": "git status",
+      "icon": "$(source-control)"
     }
   ]
 }
@@ -128,29 +161,54 @@ You can add custom commands by configuring `quickAI.customCommands`:
 
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
-| `name` | string | Yes | Display name for the command |
-| `command` | string | Yes | The command to execute |
-| `icon` | string | No | Status bar icon (VS Code Codicon, e.g., `$(robot)`) |
-| `keybinding` | string | No | Optional keyboard shortcut |
+| `name` | string | Yes | Display name shown in status bar |
+| `command` | string | Yes | The terminal command to execute |
+| `icon` | string | No | Status bar icon (VS Code Codicon format, e.g., `$(robot)`) |
 
-After adding or modifying custom commands, reload the VS Code window (`Cmd+Shift+P` → "Reload Window").
+#### Available Icons
 
-**Note**: Custom commands are a planned feature for future implementation.
+You can use any [VS Code Codicon](https://code.visualstudio.com/api/references/icons-in-labels). Popular choices:
+
+| Icon | Codicon |
+|------|---------|
+| 🤖 Robot | `$(robot)` |
+| ✨ Sparkle | `$(sparkle)` |
+| ▶️ Play | `$(debug-start)` |
+| 🔀 Source Control | `$(source-control)` |
+| ⚗️ Beaker | `$(beaker)` |
+| ⚙️ Gear | `$(gear)` |
+| 💻 Code | `$(code)` |
+| 🖥️ Terminal | `$(terminal)` |
+
+**Note**: After adding or modifying custom commands, reload the VS Code window (`Cmd+Shift+P` → "Reload Window").
 
 ## Complete Settings Example
 
 ```json
 {
-  // Show only Warp and Claude icons
+  // Status bar visibility
   "quickAI.showWarpIcon": true,
   "quickAI.showClaudeIcon": true,
-  "quickAI.showOpencodeIcon": false,
+  "quickAI.showOpencodeIcon": true,
 
   // Show only icons, no text
   "quickAI.iconStyle": "icon",
 
   // Open terminals as editor tabs
-  "quickAI.terminalLocation": "editor"
+  "quickAI.terminalLocation": "editor",
+
+  // Custom CLI commands
+  "quickAI.claudeCommand": "claude --model opus",
+  "quickAI.opencodeCommand": "opencode --config ~/.opencode.json",
+
+  // Custom commands
+  "quickAI.customCommands": [
+    {
+      "name": "Aider",
+      "command": "aider --model claude",
+      "icon": "$(sparkle)"
+    }
+  ]
 }
 ```
 

@@ -101,9 +101,32 @@
 }
 ```
 
+### CLI 命令配置
+
+自定义 Claude 和 Opencode 图标执行的命令：
+
+| 设置 | 类型 | 默认值 | 描述 |
+|---------|------|---------|-------------|
+| `quickAI.claudeCommand` | string | `claude --dangerously-skip-permissions` | 点击 Claude 图标时执行的命令 |
+| `quickAI.opencodeCommand` | string | `opencode` | 点击 Opencode 图标时执行的命令 |
+
+**示例**: 使用指定模型运行 Claude
+```json
+{
+  "quickAI.claudeCommand": "claude --model opus"
+}
+```
+
+**示例**: 替换为其他 AI CLI 工具
+```json
+{
+  "quickAI.claudeCommand": "aider --model claude-3-opus"
+}
+```
+
 ### 自定义命令
 
-你可以通过配置 `quickAI.customCommands` 添加自定义命令：
+通过配置 `quickAI.customCommands` 在状态栏添加你自己的命令：
 
 #### 配置示例
 
@@ -111,46 +134,81 @@
 {
   "quickAI.customCommands": [
     {
-      "name": "我的命令",
-      "command": "my-command --args",
-      "icon": "$(star)"
+      "name": "Aider",
+      "command": "aider --model claude",
+      "icon": "$(sparkle)"
+    },
+    {
+      "name": "Gemini",
+      "command": "gemini-cli",
+      "icon": "$(debug-start)"
     },
     {
       "name": "运行测试",
       "command": "npm test",
       "icon": "$(beaker)"
+    },
+    {
+      "name": "Git 状态",
+      "command": "git status",
+      "icon": "$(source-control)"
     }
   ]
 }
 ```
 
-#### 配置架构
+#### 配置说明
 
 | 属性 | 类型 | 必填 | 描述 |
 |----------|------|----------|-------------|
-| `name` | string | 是 | 命令的显示名称 |
-| `command` | string | 是 | 要执行的命令 |
-| `icon` | string | 否 | 状态栏图标（VS Code Codicon，例如 `$(robot)`） |
-| `keybinding` | string | 否 | 可选的键盘快捷键 |
+| `name` | string | 是 | 状态栏显示的名称 |
+| `command` | string | 是 | 要执行的终端命令 |
+| `icon` | string | 否 | 状态栏图标（VS Code Codicon 格式，例如 `$(robot)`） |
 
-添加或修改自定义命令后，重新加载 VS Code 窗口（`Cmd+Shift+P` → "重新加载窗口"）。
+#### 可用图标
 
-**注意**: 自定义命令是未来版本计划实现的功能。
+可以使用任何 [VS Code Codicon](https://code.visualstudio.com/api/references/icons-in-labels) 图标。常用图标：
+
+| 图标 | Codicon |
+|------|---------|
+| 🤖 机器人 | `$(robot)` |
+| ✨ 闪光 | `$(sparkle)` |
+| ▶️ 播放 | `$(debug-start)` |
+| 🔀 源代码管理 | `$(source-control)` |
+| ⚗️ 烧杯 | `$(beaker)` |
+| ⚙️ 齿轮 | `$(gear)` |
+| 💻 代码 | `$(code)` |
+| 🖥️ 终端 | `$(terminal)` |
+
+**注意**: 添加或修改自定义命令后，需要重新加载 VS Code 窗口（`Cmd+Shift+P` → "重新加载窗口"）。
 
 ## 完整设置示例
 
 ```json
 {
-  // 仅显示 Warp 和 Claude 图标
+  // 状态栏可见性
   "quickAI.showWarpIcon": true,
   "quickAI.showClaudeIcon": true,
-  "quickAI.showOpencodeIcon": false,
+  "quickAI.showOpencodeIcon": true,
 
   // 仅显示图标，不显示文字
   "quickAI.iconStyle": "icon",
 
   // 在编辑器标签页中打开终端
-  "quickAI.terminalLocation": "editor"
+  "quickAI.terminalLocation": "editor",
+
+  // 自定义 CLI 命令
+  "quickAI.claudeCommand": "claude --model opus",
+  "quickAI.opencodeCommand": "opencode --config ~/.opencode.json",
+
+  // 自定义命令
+  "quickAI.customCommands": [
+    {
+      "name": "Aider",
+      "command": "aider --model claude",
+      "icon": "$(sparkle)"
+    }
+  ]
 }
 ```
 
