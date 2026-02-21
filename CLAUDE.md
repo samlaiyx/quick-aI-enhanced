@@ -1,6 +1,43 @@
-# CLAUDE.md - OpenSpec 学习项目
+# CLAUDE.md - Quick AI 项目
 
-> 这是一个用于学习 OpenSpec 理念的实践项目。请 Claude 在协助时遵循渐进式引导原则。
+> VS Code 扩展项目，提供快速访问 Warp 终端、Claude CLI 和 Opencode CLI 的功能。
+
+## 发布流程
+
+### 发布前必须完成
+
+1. **更新 CHANGELOG.md**
+   - 每次发布新版本前，必须更新 CHANGELOG.md
+   - 通过 `git log --oneline` 查看自上次发布以来的提交记录
+   - 按照以下格式添加新版本的变更日志：
+
+   ```markdown
+   ## [版本号] - YYYY-MM-DD
+
+   ### Added / Changed / Fixed / Removed
+
+   - 变更描述
+   ```
+
+2. **版本号管理**
+   - 在 package.json 中更新版本号
+   - CHANGELOG.md 中的版本号与 package.json 保持一致
+   - 在 CHANGELOG.md 底部添加版本对比链接
+
+### 发布命令
+
+```bash
+# 1. 更新 package.json 版本号
+# 2. 更新 CHANGELOG.md
+# 3. 构建并发布
+pnpm run deploy
+```
+
+---
+
+## OpenSpec 学习
+
+> 以下内容用于学习 OpenSpec 理念。请 Claude 在协助时遵循渐进式引导原则。
 
 ## 项目背景
 

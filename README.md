@@ -220,14 +220,7 @@ You can use any [VS Code Codicon](https://code.visualstudio.com/api/references/i
 
 ## Release Notes
 
-### 0.0.1
-
-Initial release:
-- Status bar icons for Warp, Claude, and Opencode
-- Keyboard shortcuts for quick access
-- Configurable icon visibility
-- Configurable icon style (icon or icon+text)
-- Configurable terminal location (panel or editor tab)
+See [CHANGELOG.md](./CHANGELOG.md) for release history.
 
 ## Development
 
