@@ -2,7 +2,7 @@
   "name": "quick-ai",
   "displayName": "Quick AI",
   "description": "Quick access to Warp terminal, Claude CLI, and Opencode CLI",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "publisher": "jackywjs",
   "license": "MIT",
   "repository": {

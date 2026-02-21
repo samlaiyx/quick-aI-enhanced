@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2025-02-21
+
+### Fixed
+
+- 修复 0.0.4 版本发布问题，确保 CLI 命令配置（`claudeCommand`、`opencodeCommand`）正确包含
+
 ## [0.0.4] - 2025-02-20
 
 ### Added
@@ -35,6 +41,7 @@ All notable changes to this project will be documented in this file.
 - 可配置图标样式（仅图标或图标+文字）
 - 可配置终端位置（面板或编辑器标签页）
 
+[0.0.5]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.4...v0.0.5
 [0.0.4]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.3...v0.0.4
 [0.0.3]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.2...v0.0.3
 [0.0.2]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.1...v0.0.2
