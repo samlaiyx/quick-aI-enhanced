@@ -1,8 +1,8 @@
 {
-  "name": "quick-ai-enhanced",
-  "displayName": "Quick AI Enhanced",
+  "name": "quick-claude-codex",
+  "displayName": "Quick Claude & Codex",
   "description": "Quick access to Claude and Codex CLI with smart directory picker",
-  "version": "0.3.0",
+  "version": "0.4.1",
   "publisher": "ssy",
   "license": "MIT",
   "repository": {
