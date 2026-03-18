@@ -1,6 +1,5 @@
 // VS Code Extension API
 import * as vscode from 'vscode';
-import { exec } from 'child_process';
 
 // 自定义命令接口
 interface CustomCommand {
@@ -11,9 +10,8 @@ interface CustomCommand {
 }
 
 // 状态栏项引用
-let warpStatusBarItem: vscode.StatusBarItem | undefined;
 let claudeStatusBarItem: vscode.StatusBarItem | undefined;
-let opencodeStatusBarItem: vscode.StatusBarItem | undefined;
+let codexStatusBarItem: vscode.StatusBarItem | undefined;
 let customStatusBarItems: vscode.StatusBarItem[] = [];
 let customCommandDisposables: vscode.Disposable[] = [];
 
@@ -26,13 +24,6 @@ let configChangeListener: vscode.Disposable | undefined;
 export function activate(context: vscode.ExtensionContext) {
 	console.log('Quick AI extension is now active!');
 
-	// 注册状态栏 Warp 命令
-	const warpStatusBarCommand = vscode.commands.registerCommand(
-		'warpStatusBar',
-		openWarpTerminal
-	);
-	context.subscriptions.push(warpStatusBarCommand);
-
 	// 注册 Quick Claude 命令
 	const quickClaudeCommand = vscode.commands.registerCommand(
 		'quickClaudeCommand',
@@ -40,12 +31,12 @@ export function activate(context: vscode.ExtensionContext) {
 	);
 	context.subscriptions.push(quickClaudeCommand);
 
-	// 注册 Quick Opencode 命令
-	const quickOpencodeCommand = vscode.commands.registerCommand(
-		'quickOpencodeCommand',
-		executeQuickOpencode
+	// 注册 Quick Codex 命令
+	const quickCodexCommand = vscode.commands.registerCommand(
+		'quickCodexCommand',
+		executeQuickCodex
 	);
-	context.subscriptions.push(quickOpencodeCommand);
+	context.subscriptions.push(quickCodexCommand);
 
 	// 创建并显示状态栏图标
 	createStatusBarItems(context);
@@ -69,13 +60,12 @@ export function activate(context: vscode.ExtensionContext) {
 function getConfig() {
 	const config = vscode.workspace.getConfiguration('quickAI');
 	return {
-		showWarpIcon: config.get<boolean>('showWarpIcon', true),
 		showClaudeIcon: config.get<boolean>('showClaudeIcon', true),
-		showOpencodeIcon: config.get<boolean>('showOpencodeIcon', true),
+		showCodexIcon: config.get<boolean>('showCodexIcon', true),
 		iconStyle: config.get<string>('iconStyle', 'icon+text'),
 		terminalLocation: config.get<string>('terminalLocation', 'panel') as 'panel' | 'editor',
 		claudeCommand: config.get<string>('claudeCommand', 'claude --dangerously-skip-permissions'),
-		opencodeCommand: config.get<string>('opencodeCommand', 'opencode'),
+		codexCommand: config.get<string>('codexCommand', 'codex'),
 		customCommands: config.get<CustomCommand[]>('customCommands', [])
 	};
 }
@@ -97,7 +87,7 @@ function getStatusBarText(icon: string, text: string): string {
 function createStatusBarItems(context: vscode.ExtensionContext): void {
 	const config = getConfig();
 
-	// 1. Claude 状态栏图标 (最常用，放在最左边)
+	// 1. Claude 状态栏图标
 	if (config.showClaudeIcon) {
 		claudeStatusBarItem = vscode.window.createStatusBarItem(
 			'quickAI.claudeStatusBar',
@@ -111,37 +101,23 @@ function createStatusBarItems(context: vscode.ExtensionContext): void {
 		context.subscriptions.push(claudeStatusBarItem);
 	}
 
-	// 2. Opencode 状态栏图标 (次常用，放在中间)
-	if (config.showOpencodeIcon) {
-		opencodeStatusBarItem = vscode.window.createStatusBarItem(
-			'quickAI.opencodeStatusBar',
+	// 2. Codex 状态栏图标
+	if (config.showCodexIcon) {
+		codexStatusBarItem = vscode.window.createStatusBarItem(
+			'quickAI.codexStatusBar',
 			vscode.StatusBarAlignment.Right,
 			99
 		);
-		opencodeStatusBarItem.text = getStatusBarText('code', 'Opencode');
-		opencodeStatusBarItem.tooltip = 'Quick Opencode CLI';
-		opencodeStatusBarItem.command = 'quickOpencodeCommand';
-		opencodeStatusBarItem.show();
-		context.subscriptions.push(opencodeStatusBarItem);
-	}
-
-	// 3. Warp 状态栏图标 (偶尔用，放在最右边)
-	if (config.showWarpIcon) {
-		warpStatusBarItem = vscode.window.createStatusBarItem(
-			'quickAI.warpStatusBar',
-			vscode.StatusBarAlignment.Right,
-			98
-		);
-		warpStatusBarItem.text = getStatusBarText('terminal', 'Warp');
-		warpStatusBarItem.tooltip = 'Open in Warp Terminal';
-		warpStatusBarItem.command = 'warpStatusBar';
-		warpStatusBarItem.show();
-		context.subscriptions.push(warpStatusBarItem);
+		codexStatusBarItem.text = getStatusBarText('sparkle', 'Codex');
+		codexStatusBarItem.tooltip = 'Quick Codex CLI';
+		codexStatusBarItem.command = 'quickCodexCommand';
+		codexStatusBarItem.show();
+		context.subscriptions.push(codexStatusBarItem);
 	}
 
 	console.log('状态栏图标已创建，配置:', config);
 
-	// 4. 创建自定义命令状态栏图标
+	// 3. 创建自定义命令状态栏图标
 	createCustomStatusBarItems(context, config.customCommands);
 }
 
@@ -170,9 +146,12 @@ function createCustomStatusBarItems(context: vscode.ExtensionContext, customComm
 				return;
 			}
 
+			// 获取路径
+			const folderPath = typeof folder === 'string' ? folder : folder.uri.fsPath;
+
 			const terminal = vscode.window.createTerminal({
 				name: cmd.name,
-				cwd: folder.uri.fsPath,
+				cwd: folderPath,
 				location: getConfig().terminalLocation === 'editor'
 					? { viewColumn: vscode.ViewColumn.Two }
 					: undefined
@@ -220,17 +199,13 @@ function disposeCustomStatusBarItems(): void {
  * 清理状态栏项
  */
 function disposeStatusBarItems(): void {
-	if (warpStatusBarItem) {
-		warpStatusBarItem.dispose();
-		warpStatusBarItem = undefined;
-	}
 	if (claudeStatusBarItem) {
 		claudeStatusBarItem.dispose();
 		claudeStatusBarItem = undefined;
 	}
-	if (opencodeStatusBarItem) {
-		opencodeStatusBarItem.dispose();
-		opencodeStatusBarItem = undefined;
+	if (codexStatusBarItem) {
+		codexStatusBarItem.dispose();
+		codexStatusBarItem = undefined;
 	}
 	// 清理自定义命令状态栏项
 	disposeCustomStatusBarItems();
@@ -238,63 +213,121 @@ function disposeStatusBarItems(): void {
 
 /**
  * 获取工作区文件夹
- * - 无工作区时显示警告并返回 undefined
- * - 单文件夹时直接返回该文件夹
- * - 多文件夹时显示 Quick Pick 选择界面
+ * - 优先使用当前工作区第一个目录
+ * - 提供"使用当前目录"和"更改目录"选项
  */
-async function getWorkspaceFolder(): Promise<vscode.WorkspaceFolder | undefined> {
+async function getWorkspaceFolder(): Promise<vscode.WorkspaceFolder | string | undefined> {
 	const workspaceFolders = vscode.workspace.workspaceFolders;
 
-	// 无工作区场景
-	if (!workspaceFolders || workspaceFolders.length === 0) {
-		vscode.window.showWarningMessage('请先打开一个工作区文件夹');
-		return undefined;
+	// 如果有工作区，默认使用第一个，但提供更改选项
+	if (workspaceFolders && workspaceFolders.length > 0) {
+		const defaultFolder = workspaceFolders[0];
+
+		// 构建选项列表
+		interface FolderPickItem extends vscode.QuickPickItem {
+			action: 'default' | 'change';
+		}
+
+		const items: FolderPickItem[] = [
+			{
+				label: `$(check) 使用当前目录`,
+				description: defaultFolder.uri.fsPath,
+				detail: '直接在此目录执行命令',
+				action: 'default'
+			},
+			{
+				label: `$(folder-opened) 更改目录...`,
+				description: '选择其他工作区或浏览文件夹',
+				action: 'change'
+			}
+		];
+
+		const selected = await vscode.window.showQuickPick(items, {
+			placeHolder: '选择工作目录'
+		});
+
+		if (!selected) {
+			return undefined;
+		}
+
+		// 如果选择默认目录
+		if (selected.action === 'default') {
+			return defaultFolder;
+		}
+
+		// 如果选择更改目录，显示所有工作区和浏览选项
+		return await showAllFoldersAndBrowse(workspaceFolders);
 	}
 
-	// 单文件夹场景 - 直接使用
-	if (workspaceFolders.length === 1) {
-		return workspaceFolders[0];
-	}
-
-	// 多文件夹场景 - 显示 Quick Pick 选择界面
-	interface WorkspaceFolderItem extends vscode.QuickPickItem {
-		folder: vscode.WorkspaceFolder;
-	}
-
-	const items: WorkspaceFolderItem[] = workspaceFolders.map(folder => ({
-		label: folder.name,
-		description: folder.uri.fsPath,
-		folder: folder
-	}));
-
-	const selected = await vscode.window.showQuickPick(items, {
-		placeHolder: '选择一个工作区文件夹'
+	// 没有工作区，直接显示浏览对话框
+	const folderUri = await vscode.window.showOpenDialog({
+		canSelectFiles: false,
+		canSelectFolders: true,
+		canSelectMany: false,
+		openLabel: '选择目录',
+		title: '选择 Codex 工作目录'
 	});
 
-	return selected?.folder;
+	if (folderUri && folderUri[0]) {
+		return folderUri[0].fsPath;
+	}
+	return undefined;
 }
 
 /**
- * 打开 Warp 终端
+ * 显示所有工作区文件夹和浏览选项
  */
-async function openWarpTerminal(): Promise<void> {
-	// 获取工作区文件夹
-	const folder = await getWorkspaceFolder();
-	if (!folder) {
-		return; // 用户取消或无工作区
+async function showAllFoldersAndBrowse(workspaceFolders: readonly vscode.WorkspaceFolder[]): Promise<vscode.WorkspaceFolder | string | undefined> {
+	interface FolderPickItem extends vscode.QuickPickItem {
+		action: 'workspace' | 'browse';
+		folder?: vscode.WorkspaceFolder;
 	}
 
-	const workspacePath = folder.uri.fsPath;
+	const items: FolderPickItem[] = [];
 
-	// 使用 child_process 执行 open 命令
-	exec(`open -a "Warp" "${workspacePath}"`, (error, stdout, stderr) => {
-		if (error) {
-			console.error(`打开 Warp 失败: ${error.message}`);
-			vscode.window.showErrorMessage(`无法打开 Warp: ${error.message}`);
-			return;
-		}
-		console.log('Warp 已打开');
+	// 添加所有工作区选项
+	workspaceFolders.forEach(folder => {
+		items.push({
+			label: `$(folder) ${folder.name}`,
+			description: folder.uri.fsPath,
+			action: 'workspace',
+			folder: folder
+		});
 	});
+
+	// 添加浏览其他目录选项
+	items.push({
+		label: '$(file-directory) 浏览其他目录...',
+		description: '打开文件夹选择器',
+		action: 'browse'
+	});
+
+	const selected = await vscode.window.showQuickPick(items, {
+		placeHolder: '选择工作区或浏览其他目录'
+	});
+
+	if (!selected) {
+		return undefined;
+	}
+
+	// 如果选择浏览其他目录
+	if (selected.action === 'browse') {
+		const folderUri = await vscode.window.showOpenDialog({
+			canSelectFiles: false,
+			canSelectFolders: true,
+			canSelectMany: false,
+			openLabel: '选择目录',
+			title: '选择 Codex 工作目录'
+		});
+
+		if (folderUri && folderUri[0]) {
+			return folderUri[0].fsPath;
+		}
+		return undefined;
+	}
+
+	// 返回选中的工作区
+	return selected.folder;
 }
 
 /**
@@ -306,13 +339,16 @@ async function createTerminal(name: string): Promise<vscode.Terminal | undefined
 	// 获取工作区文件夹
 	const folder = await getWorkspaceFolder();
 	if (!folder) {
-		return undefined; // 用户取消或无工作区
+		return undefined; // 用户取消
 	}
+
+	// 获取路径
+	const folderPath = typeof folder === 'string' ? folder : folder.uri.fsPath;
 
 	// 根据配置选择终端位置
 	const terminalOptions: vscode.TerminalOptions = {
 		name,
-		cwd: folder.uri.fsPath
+		cwd: folderPath
 	};
 
 	if (config.terminalLocation === 'editor') {
@@ -334,7 +370,7 @@ async function executeQuickClaude(): Promise<void> {
 	// 创建新的终端
 	const terminal = await createTerminal('Quick Claude');
 	if (!terminal) {
-		return; // 用户取消或无工作区
+		return; // 用户取消
 	}
 
 	// 发送 Claude CLI 命令（包含换行符自动执行）
@@ -345,19 +381,19 @@ async function executeQuickClaude(): Promise<void> {
 }
 
 /**
- * 执行 Quick Opencode 命令
+ * 执行 Quick Codex 命令
  */
-async function executeQuickOpencode(): Promise<void> {
+async function executeQuickCodex(): Promise<void> {
 	const config = getConfig();
 
 	// 创建新的终端
-	const terminal = await createTerminal('Quick Opencode');
+	const terminal = await createTerminal('Quick Codex');
 	if (!terminal) {
 		return; // 用户取消或无工作区
 	}
 
-	// 发送 Opencode 命令（包含换行符自动执行）
-	terminal.sendText(config.opencodeCommand + '\n');
+	// 发送 Codex 命令（包含换行符自动执行）
+	terminal.sendText(config.codexCommand + '\n');
 
 	// 显示并聚焦终端
 	terminal.show();

@@ -1,9 +1,9 @@
 {
-  "name": "quick-ai",
-  "displayName": "Quick AI",
-  "description": "Quick access to Warp terminal, Claude CLI, and Opencode CLI",
-  "version": "0.0.5",
-  "publisher": "jackywjs",
+  "name": "quick-ai-enhanced",
+  "displayName": "Quick AI Enhanced",
+  "description": "Quick access to Claude and Codex CLI with smart directory picker",
+  "version": "0.3.0",
+  "publisher": "ssy",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -26,18 +26,13 @@
   "contributes": {
     "commands": [
       {
-        "command": "warpStatusBar",
-        "title": "Open in Warp",
-        "category": "Quick AI"
-      },
-      {
         "command": "quickClaudeCommand",
         "title": "Quick Claude",
         "category": "Quick AI"
       },
       {
-        "command": "quickOpencodeCommand",
-        "title": "Quick Opencode",
+        "command": "quickCodexCommand",
+        "title": "Quick Codex",
         "category": "Quick AI"
       }
     ],
@@ -49,29 +44,24 @@
         "when": "editorTextFocus"
       },
       {
-        "command": "quickOpencodeCommand",
-        "key": "cmd+shift+o",
-        "mac": "cmd+shift+o",
+        "command": "quickCodexCommand",
+        "key": "cmd+shift+x",
+        "mac": "cmd+shift+x",
         "when": "editorTextFocus"
       }
     ],
     "configuration": {
       "title": "Quick AI",
       "properties": {
-        "quickAI.showWarpIcon": {
-          "type": "boolean",
-          "default": true,
-          "description": "在状态栏显示 Warp 图标"
-        },
         "quickAI.showClaudeIcon": {
           "type": "boolean",
           "default": true,
           "description": "在状态栏显示 Claude 图标"
         },
-        "quickAI.showOpencodeIcon": {
+        "quickAI.showCodexIcon": {
           "type": "boolean",
           "default": true,
-          "description": "在状态栏显示 Opencode 图标"
+          "description": "在状态栏显示 Codex 图标"
         },
         "quickAI.iconStyle": {
           "type": "string",
@@ -104,10 +94,10 @@
           "default": "claude --dangerously-skip-permissions",
           "description": "Claude CLI 命令（不含换行符）"
         },
-        "quickAI.opencodeCommand": {
+        "quickAI.codexCommand": {
           "type": "string",
-          "default": "opencode",
-          "description": "Opencode CLI 命令（不含换行符）"
+          "default": "codex",
+          "description": "Codex CLI 命令（不含换行符）"
         },
         "quickAI.customCommands": {
           "type": "array",

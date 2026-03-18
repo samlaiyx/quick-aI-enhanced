@@ -1,247 +1,122 @@
-# Quick AI
+# Quick AI Enhanced
 
-Quick access to Warp terminal, Claude CLI, and Opencode CLI for VS Code.
-
-English | [简体中文](./README.zh-CN.md)
+Quick access to Claude and Codex CLI with smart directory picker for VS Code.
 
 ## Features
 
-- **Status Bar Icons**: Quick access to Warp, Claude, and Opencode from the status bar
-- **Quick Claude Command**: Execute `claude --dangerously-skip-permissions` instantly
-- **Quick Opencode Command**: Execute `opencode` instantly
-- **Custom Commands**: Configure your own commands via settings
-- **Configurable**: Choose which icons to show, icon style, and terminal location
-
-## Status Bar
-
-Click any icon in the status bar to execute the corresponding command:
-
-| Icon | Command | Description |
-|------|---------|-------------|
-| ⌘ Warp | Open in Warp | Opens current directory in Warp terminal |
-| 🤖 Claude | Quick Claude | Executes Claude CLI in a new terminal |
-| 💻 Opencode | Quick Opencode | Executes Opencode CLI in a new terminal |
-
-## Requirements
-
-- **macOS**: This extension uses macOS-specific commands
-- **Warp** (optional): For the Warp status bar feature
-- **Claude CLI** (optional): For the Quick Claude feature
-- **Opencode CLI** (optional): For the Quick Opencode feature
+- **Quick Launch**: One-click access to Claude and Codex CLI from the status bar
+- **Smart Directory Picker**:
+  - Default to current workspace directory
+  - Easy switching between multiple workspaces
+  - Browse any folder on your system
+- **Keyboard Shortcuts**:
+  - `Cmd+Shift+C` (Mac) / `Ctrl+Shift+C` (Windows) - Launch Claude
+  - `Cmd+Shift+X` (Mac) / `Ctrl+Shift+X` (Windows) - Launch Codex
+- **Customizable**: Configure commands and terminal location
 
 ## Usage
 
-### Status Bar Icons
+### Status Bar Buttons
 
-Click any icon in the VS Code status bar (right side) to execute the corresponding command.
+Click the status bar icons (bottom right):
+- 🤖 **Claude** - Launch Claude CLI
+- ✨ **Codex** - Launch Codex CLI
 
-### Keyboard Shortcuts
+### Directory Selection Flow
 
-| Shortcut | Command | Description |
-|----------|---------|-------------|
-| `Cmd+Shift+C` | Quick Claude | Execute Claude CLI |
-| `Cmd+Shift+O` | Quick Opencode | Execute Opencode CLI |
+When you click a button:
 
-**Note**: Shortcuts work when the editor has focus. You can customize them in VS Code Keyboard Settings.
+1. **First prompt**: Choose quickly
+   - ✓ Use current directory (default workspace)
+   - 📁 Change directory...
 
-### Command Palette
+2. **If you select "Change directory"**:
+   - See all workspace folders
+   - Or browse to any folder
 
-You can also use the Command Palette (`Cmd+Shift+P`):
+This design makes it fast to use your current directory while still allowing easy switching.
 
-- Search for "Quick AI: Open in Warp"
-- Search for "Quick AI: Quick Claude"
-- Search for "Quick AI: Quick Opencode"
+## Installation
 
-## Extension Settings
+### From VSIX
 
-### Status Bar Visibility
+1. Download the latest `.vsix` file from [Releases](https://github.com/samlaiyx/quick-ai-enhanced/releases)
+2. In VS Code: `Ctrl+Shift+P` → "Extensions: Install from VSIX..."
+3. Select the downloaded file
+4. Reload VS Code
 
-Control which icons appear in the status bar:
-
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `quickAI.showWarpIcon` | boolean | true | Show Warp icon in status bar |
-| `quickAI.showClaudeIcon` | boolean | true | Show Claude icon in status bar |
-| `quickAI.showOpencodeIcon` | boolean | true | Show Opencode icon in status bar |
-
-**Example**: Hide Opencode icon
-```json
-{
-  "quickAI.showOpencodeIcon": false
-}
-```
-
-### Icon Style
-
-Choose how icons are displayed:
-
-| Setting | Type | Default | Options |
-|---------|------|---------|---------|
-| `quickAI.iconStyle` | string | "icon+text" | `"icon"` or `"icon+text"` |
-
-**Example**: Show only icons (no text)
-```json
-{
-  "quickAI.iconStyle": "icon"
-}
-```
-
-### Terminal Location
-
-Choose where terminals open when executing commands:
-
-| Setting | Type | Default | Options |
-|---------|------|---------|---------|
-| `quickAI.terminalLocation` | string | "panel" | `"panel"` (bottom) or `"editor"` (as tab) |
-
-**Example**: Open terminals as editor tabs
-```json
-{
-  "quickAI.terminalLocation": "editor"
-}
-```
-
-### CLI Commands
-
-Customize the commands executed by the Claude and Opencode status bar icons:
-
-| Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| `quickAI.claudeCommand` | string | `claude --dangerously-skip-permissions` | Command to execute when clicking Claude icon |
-| `quickAI.opencodeCommand` | string | `opencode` | Command to execute when clicking Opencode icon |
-
-**Example**: Use Claude with a specific model
-```json
-{
-  "quickAI.claudeCommand": "claude --model opus"
-}
-```
-
-**Example**: Use a different AI CLI tool
-```json
-{
-  "quickAI.claudeCommand": "aider --model claude-3-opus"
-}
-```
-
-### Custom Commands
-
-Add your own commands to the status bar by configuring `quickAI.customCommands`:
-
-#### Example Configuration
-
-```json
-{
-  "quickAI.customCommands": [
-    {
-      "name": "Aider",
-      "command": "aider --model claude",
-      "icon": "$(sparkle)"
-    },
-    {
-      "name": "Gemini",
-      "command": "gemini-cli",
-      "icon": "$(debug-start)"
-    },
-    {
-      "name": "Run Tests",
-      "command": "npm test",
-      "icon": "$(beaker)"
-    },
-    {
-      "name": "Git Status",
-      "command": "git status",
-      "icon": "$(source-control)"
-    }
-  ]
-}
-```
-
-#### Configuration Schema
-
-| Property | Type | Required | Description |
-|----------|------|----------|-------------|
-| `name` | string | Yes | Display name shown in status bar |
-| `command` | string | Yes | The terminal command to execute |
-| `icon` | string | No | Status bar icon (VS Code Codicon format, e.g., `$(robot)`) |
-
-#### Available Icons
-
-You can use any [VS Code Codicon](https://code.visualstudio.com/api/references/icons-in-labels). Popular choices:
-
-| Icon | Codicon |
-|------|---------|
-| 🤖 Robot | `$(robot)` |
-| ✨ Sparkle | `$(sparkle)` |
-| ▶️ Play | `$(debug-start)` |
-| 🔀 Source Control | `$(source-control)` |
-| ⚗️ Beaker | `$(beaker)` |
-| ⚙️ Gear | `$(gear)` |
-| 💻 Code | `$(code)` |
-| 🖥️ Terminal | `$(terminal)` |
-
-**Note**: After adding or modifying custom commands, reload the VS Code window (`Cmd+Shift+P` → "Reload Window").
-
-## Complete Settings Example
-
-```json
-{
-  // Status bar visibility
-  "quickAI.showWarpIcon": true,
-  "quickAI.showClaudeIcon": true,
-  "quickAI.showOpencodeIcon": true,
-
-  // Show only icons, no text
-  "quickAI.iconStyle": "icon",
-
-  // Open terminals as editor tabs
-  "quickAI.terminalLocation": "editor",
-
-  // Custom CLI commands
-  "quickAI.claudeCommand": "claude --model opus",
-  "quickAI.opencodeCommand": "opencode --config ~/.opencode.json",
-
-  // Custom commands
-  "quickAI.customCommands": [
-    {
-      "name": "Aider",
-      "command": "aider --model claude",
-      "icon": "$(sparkle)"
-    }
-  ]
-}
-```
-
-## Known Issues
-
-- macOS only: The extension uses macOS-specific commands
-- CLI tools must be installed and in your PATH for respective features to work
-- Configuration changes take effect immediately (hot reload supported)
-
-## Release Notes
-
-See [CHANGELOG.md](./CHANGELOG.md) for release history.
-
-## Development
+### From Source
 
 ```bash
-# Install dependencies
+git clone https://github.com/samlaiyx/quick-ai-enhanced.git
+cd quick-ai-enhanced
 pnpm install
-
-# Compile
 pnpm run compile
-
-# Watch for changes
-pnpm run watch
-
-# Run tests
-pnpm run test
+pnpm run package:vsix
+code --install-extension quick-ai-enhanced-*.vsix
 ```
+
+## Configuration
+
+Open VS Code settings (`Ctrl+,`) and search for "Quick AI":
+
+```json
+{
+  // Show/hide status bar icons
+  "quickAI.showClaudeIcon": true,
+  "quickAI.showCodexIcon": true,
+
+  // Icon display style
+  "quickAI.iconStyle": "icon+text",  // or "icon"
+
+  // Terminal location
+  "quickAI.terminalLocation": "editor",  // or "panel"
+
+  // Custom commands
+  "quickAI.claudeCommand": "claude --dangerously-skip-permissions",
+  "quickAI.codexCommand": "codex",
+
+  // Custom commands (advanced)
+  "quickAI.customCommands": [
+    {
+      "name": "Aider",
+      "command": "aider --model claude",
+      "icon": "$(sparkle)"
+    }
+  ]
+}
+```
+
+## Requirements
+
+- VS Code 1.105.0 or higher
+- Claude CLI (optional) - Install from [Anthropic](https://docs.anthropic.com/claude/docs/cli)
+- Codex CLI (optional)
+
+## Changelog
+
+### 0.3.0 (2026-03-18)
+
+- Added smart directory picker with two-step selection
+- Default to current workspace for faster workflow
+- Support for browsing any folder
+- Removed Warp and Opencode (focused on Claude and Codex)
+
+### 0.2.0
+
+- Removed Claude button (Codex only)
+- Improved directory selection
+
+### 0.1.0
+
+- Initial release
+- Fork from Quick AI by jackywjs
+- Added directory picker for all commands
+
+## Credits
+
+Forked from [Quick AI](https://github.com/wangjs-jacky/quick-ai) by jackywjs.
 
 ## License
 
 MIT
-
----
-
-**Enjoy!**
