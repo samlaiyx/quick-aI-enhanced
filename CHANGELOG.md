@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.1] - 2026-03-19
+
+### Changed
+
+- 重命名项目为 quick-claude-codex（Quick Claude & Codex）
+- 更新仓库元数据指向 fork 仓库
+
+## [0.4.0] - 2026-03-19
+
+### Added
+
+- 新增智能目录选择器：支持快速选择当前目录或切换工作区
+- 支持多工作区文件夹列表选择
+- 支持浏览文件系统选择任意目录
+- 将 Opencode 替换为 Codex CLI 支持
+
 ## [0.0.5] - 2025-02-21
 
 ### Fixed
@@ -41,8 +57,10 @@ All notable changes to this project will be documented in this file.
 - 可配置图标样式（仅图标或图标+文字）
 - 可配置终端位置（面板或编辑器标签页）
 
-[0.0.5]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.4...v0.0.5
-[0.0.4]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.3...v0.0.4
-[0.0.3]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.2...v0.0.3
-[0.0.2]: https://github.com/wangjs-jacky/quick-ai/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/wangjs-jacky/quick-ai/releases/tag/v0.0.1
+[0.4.1]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.4.0...v0.4.1
+[0.4.0]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.0.5...v0.4.0
+[0.0.5]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.0.4...v0.0.5
+[0.0.4]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.0.3...v0.0.4
+[0.0.3]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.0.2...v0.0.3
+[0.0.2]: https://github.com/samlaiyx/quick-ai-enhanced/compare/v0.0.1...v0.0.2
+[0.0.1]: https://github.com/samlaiyx/quick-ai-enhanced/releases/tag/v0.0.1

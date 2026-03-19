@@ -7,12 +7,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wangjs-jacky/quick-ai.git"
+    "url": "https://github.com/samlaiyx/quick-ai-enhanced.git"
   },
   "bugs": {
-    "url": "https://github.com/wangjs-jacky/quick-ai/issues"
+    "url": "https://github.com/samlaiyx/quick-ai-enhanced/issues"
   },
-  "homepage": "https://github.com/wangjs-jacky/quick-ai#readme",
+  "homepage": "https://github.com/samlaiyx/quick-ai-enhanced#readme",
   "engines": {
     "vscode": "^1.105.0"
   },
