@@ -2,6 +2,29 @@
 
 Quick access to Claude and Codex CLI with smart directory picker for VS Code.
 
+## 安装方式
+
+### 方式一：VSIX 文件直接安装（推荐）
+
+从 [Releases](https://github.com/samlaiyx/quick-ai-enhanced/releases) 下载最新的 `.vsix` 文件，然后三选一安装：
+
+1. VS Code 扩展面板 → 右上角 `...` → "从 VSIX 安装..."
+2. 命令行：
+   ```bash
+   code --install-extension quick-claude-codex-0.4.1.vsix
+   ```
+3. 直接将 `.vsix` 文件拖入 VS Code 扩展面板
+
+### 方式二：从源码构建安装
+
+```bash
+git clone https://github.com/samlaiyx/quick-ai-enhanced.git
+cd quick-ai-enhanced
+pnpm install
+pnpm run package:vsix
+code --install-extension quick-claude-codex-0.4.1.vsix
+```
+
 ## Features
 
 - **Quick Launch**: One-click access to Claude and Codex CLI from the status bar
@@ -35,26 +58,6 @@ When you click a button:
    - Or browse to any folder
 
 This design makes it fast to use your current directory while still allowing easy switching.
-
-## Installation
-
-### From VSIX
-
-1. Download the latest `.vsix` file from [Releases](https://github.com/samlaiyx/quick-ai-enhanced/releases)
-2. In VS Code: `Ctrl+Shift+P` → "Extensions: Install from VSIX..."
-3. Select the downloaded file
-4. Reload VS Code
-
-### From Source
-
-```bash
-git clone https://github.com/samlaiyx/quick-ai-enhanced.git
-cd quick-ai-enhanced
-pnpm install
-pnpm run compile
-pnpm run package:vsix
-code --install-extension quick-ai-enhanced-*.vsix
-```
 
 ## Configuration
 
