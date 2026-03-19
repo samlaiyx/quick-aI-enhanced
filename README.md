@@ -2,6 +2,8 @@
 
 Quick access to Claude and Codex CLI with smart directory picker for VS Code.
 
+> **Fork of [Quick AI](https://github.com/wangjs-jacky/quick-ai) by [jackywjs](https://github.com/wangjs-jacky).** Extended with smart directory picker, Claude/Codex support, and additional configuration options.
+
 ## 安装方式
 
 ### 方式一：VSIX 文件直接安装（推荐）
