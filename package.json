@@ -96,7 +96,7 @@
         },
         "quickAI.codexCommand": {
           "type": "string",
-          "default": "codex",
+          "default": "codex --dangerously-bypass-approvals-and-sandbox",
           "description": "Codex CLI 命令（不含换行符）"
         },
         "quickAI.customCommands": {

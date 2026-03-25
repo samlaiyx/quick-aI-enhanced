@@ -79,7 +79,7 @@ Open VS Code settings (`Ctrl+,`) and search for "Quick AI":
 
   // Custom commands
   "quickAI.claudeCommand": "claude --dangerously-skip-permissions",
-  "quickAI.codexCommand": "codex",
+  "quickAI.codexCommand": "codex --dangerously-bypass-approvals-and-sandbox",
 
   // Custom commands (advanced)
   "quickAI.customCommands": [

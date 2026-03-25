@@ -1,5 +1,6 @@
 // VS Code Extension API
 import * as vscode from 'vscode';
+import { DEFAULT_CODEX_COMMAND, normalizeCodexCommand } from './codexCommand';
 
 // 自定义命令接口
 interface CustomCommand {
@@ -65,7 +66,7 @@ function getConfig() {
 		iconStyle: config.get<string>('iconStyle', 'icon+text'),
 		terminalLocation: config.get<string>('terminalLocation', 'panel') as 'panel' | 'editor',
 		claudeCommand: config.get<string>('claudeCommand', 'claude --dangerously-skip-permissions'),
-		codexCommand: config.get<string>('codexCommand', 'codex --dangerously-bypass-approvals-and-sandbox'),
+		codexCommand: normalizeCodexCommand(config.get<string>('codexCommand', DEFAULT_CODEX_COMMAND)),
 		customCommands: config.get<CustomCommand[]>('customCommands', [])
 	};
 }
