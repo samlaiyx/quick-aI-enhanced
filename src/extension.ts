@@ -65,7 +65,7 @@ function getConfig() {
 		iconStyle: config.get<string>('iconStyle', 'icon+text'),
 		terminalLocation: config.get<string>('terminalLocation', 'panel') as 'panel' | 'editor',
 		claudeCommand: config.get<string>('claudeCommand', 'claude --dangerously-skip-permissions'),
-		codexCommand: config.get<string>('codexCommand', 'codex'),
+		codexCommand: config.get<string>('codexCommand', 'codex --dangerously-bypass-approvals-and-sandbox'),
 		customCommands: config.get<CustomCommand[]>('customCommands', [])
 	};
 }
